@@ -12,4 +12,6 @@ Before usage, a new Discord application has to be created, as shown in the [inst
 The bot has 5 commands:
 * $price or $p<br/>usage: `$price <query> or $p <query>`<br/>sends an embed with the current price for the symbol.<br/>
 * $indepth<br/>usage: `$indepth <query>`<br/>sends an embed with current price, open, dayHigh, dayLow, prevClose and marketCap for the symbol.<br/>
-* $info<br/>usage: `$info <query>`<br/>sends an embed with some basic informationmations about the company with the symbol queried
+* $info<br/>usage: `$info <query>`<br/>sends an embed with some basic informations about the company with the symbol queried.<br/>
+* $help<br/>usage: `$help`<br/>sends an embed with the help message.<br>
+* $invite<br/>usage: `$invite`<br/>sends an invite link for itself to be added to other discord servers.

@@ -108,6 +108,40 @@ async def info(ctx, *, query):
     await ctx.send(embed=embed)
 
 
+# sends an embed with informations about the bot and its commands
+client.remove_command("help")
+@client.command(name="help")
+async def help(ctx):
+    embed = discord.Embed(
+        title="Help",
+        description="A simple and free to use discord bot for stocks.",
+        color=discord.Color.green()
+    )
+    ukazi = """
+    `$price <query> or $p <query>` sends an embed with the current price for the symbol.
+    `$indepth <query>` sends an embed with current price, open, dayHigh, dayLow, prevClose and marketCap for the symbol.
+    `$info <query>` sends an embed with some basic informations about the company with the symbol queried.
+    `$help` sends an embed with the help message.
+    `$invite` sends an invite link for itself to be added to other discord servers.
+    """
+    embed.set_thumbnail(url=client.user.avatar_url)
+    embed.add_field(name="Commands", value=ukazi, inline=False)
+    embed.add_field(name="Add the bot to your server", value="https://bit.ly/39bxPcO\nBot is currently in {} servers".format(len(client.guilds)), inline=False)
+    embed.add_field(name="Help", value="For more informations about the bot and the code add CaptainYEET#9943")
+    await ctx.send(embed=embed)
+
+
+# sends an embed with a shortened invite link for the bot
+@client.command(name="invite")
+async def invite(ctx):
+    message = discord.Embed(
+        title="Invite me to your discord server:",
+        description="https://bit.ly/2XaFvFn",
+        color=discord.Color.green()
+    )
+    await ctx.send(embed=message)
+
+
 # reading the bot key from a private file because things like that shouldn't be posted on the internet
 # starting the client
 dat = open("key.txt", "r")
