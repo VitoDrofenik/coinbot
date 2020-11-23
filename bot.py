@@ -13,22 +13,20 @@ def millify(n):
     return '{:.0f}{}'.format(n / 10 ** (3 * millidx), millnames[millidx])
 
 
-### ZAGON BOTA
-# tukaj se lahko spremeni predpona, za katero bot posluša
-# here the prefix used to command the bot can be changed
+# here you can set the prefix
 client = commands.Bot(command_prefix="$")
 
 
+# log stuff, you can also set the presence here
 @client.event
 async def on_ready():
     await client.change_presence(status=discord.Status.online, activity=discord.Game("buy TSLA"))
-    # za lažji nadzor nad botom, ker ob zagonu potrebuje nekaj časa, da dobi ponudbo vseh ponudnikov
-    # here for easier overview over the bot, as the initialization takes some time at the beginning
     print("[general] Bot is ready")
 
 
+# sends an embed with the current price
 @client.command(name="price")
-async def price(ctx, *, query):
+async def price(ctx, query):
     try:
         ticker = yf.Ticker(query)
         currency = " " + ticker.info["currency"]
@@ -48,6 +46,13 @@ async def price(ctx, *, query):
     await ctx.send(embed=embed)
 
 
+# overloading the price command with the shorter version
+@client.command(name="p")
+async def p(ctx, query):
+    await price(ctx, query)
+
+
+# sends an embed with current price, open, dayHigh, dayLow, prevClose and marketCap
 @client.command(name="indepth")
 async def indepth(ctx, *, query):
     try:
@@ -74,6 +79,7 @@ async def indepth(ctx, *, query):
     await ctx.send(embed=embed)
 
 
+# sends an embed with some basic informations about the company
 @client.command(name="info")
 async def info(ctx, *, query):
     try:
@@ -92,7 +98,6 @@ async def info(ctx, *, query):
         embed.add_field(name="Country", value=ticker.info["country"], inline=True)
         embed.add_field(name="Website", value=ticker.info["website"], inline=False)
         embed.add_field(name="Phone", value=ticker.info["phone"], inline=True)
-        #embed.add_field(name="Summary", value=ticker.info["longBusinessSummary"], inline=False)
     except:
         embed = discord.Embed(
             title="Ticker not found",
@@ -103,8 +108,8 @@ async def info(ctx, *, query):
     await ctx.send(embed=embed)
 
 
-# branje ključa za bot iz zasebne datoteke, ker se takšne stvari ne objavljajo na internetu
 # reading the bot key from a private file because things like that shouldn't be posted on the internet
+# starting the client
 dat = open("key.txt", "r")
 key = dat.read().strip()
 client.run(key)
