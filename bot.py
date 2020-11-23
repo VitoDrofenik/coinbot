@@ -20,15 +20,44 @@ async def on_ready():
 
 @client.command(name="price")
 async def price(ctx, *, query):
-    ticker = yf.Ticker(query)
-    embed = discord.Embed(
-        title=ticker.info["shortName"],
-        color=discord.Color.green()
-    )
-    embed.set_thumbnail(url=ticker.info["logo_url"])
-    embed.add_field(name="Trenutna cena", value=str(ticker.info["ask"])+"$", inline=False)
+    try:
+        ticker = yf.Ticker(query)
+        embed = discord.Embed(
+            title=ticker.info["shortName"],
+            color=discord.Color.green()
+        )
+        embed.set_thumbnail(url=ticker.info["logo_url"])
+        embed.add_field(name="Current price", value=str(ticker.info["ask"])+"$", inline=False)
+    except:
+        embed = discord.Embed(
+            title="Ticker not found",
+            color=discord.Color.red()
+        )
+        embed.add_field(name="Invalid ticker.", value=" Please try again.", inline=False)
     await ctx.send(embed=embed)
 
+
+@client.command(name="indepth")
+async def indepth(ctx, *, query):
+    try:
+        ticker = yf.Ticker(query)
+        currency = " " + ticker.info["currency"]
+        embed = discord.Embed(
+            title=ticker.info["shortName"],
+            color=discord.Color.green()
+        )
+        embed.set_thumbnail(url=ticker.info["logo_url"])
+        embed.add_field(name="Current price", value=str(ticker.info["ask"]) + currency, inline=False)
+        embed.add_field(name="Open", value=str(ticker.info["open"]) + currency, inline=True)
+        embed.add_field(name="High", value=str(ticker.info["dayHigh"]) + currency, inline=True)
+        embed.add_field(name="Low", value=str(ticker.info["dayLow"]) + currency, inline=True)
+    except:
+        embed = discord.Embed(
+            title="Ticker not found",
+            color=discord.Color.red()
+        )
+        embed.add_field(name="Invalid ticker.", value=" Please try again.", inline=False)
+    await ctx.send(embed=embed)
 
 
 # branje ključa za bot iz zasebne datoteke, ker se takšne stvari ne objavljajo na internetu
