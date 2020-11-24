@@ -35,7 +35,11 @@ async def price(ctx, query):
             color=discord.Color.green()
         )
         embed.set_thumbnail(url=ticker.info["logo_url"])
-        embed.add_field(name="Current price", value="{:.2f}".format(ticker.info["ask"]) + currency, inline=False)
+        if ticker.info["ask"] > 0:
+            embed.add_field(name="Current price", value="{:.2f}".format(ticker.info["ask"]) + currency, inline=False)
+        else:
+            embed.add_field(name="Market currently closed", value="last minute high will be displayed", inline=False)
+            embed.add_field(name="Last minute high", value="{:.2f}".format(ticker.history(period="1d", interval="1m")["High"][-1]) + currency, inline=False)
     except:
         embed = discord.Embed(
             title="Ticker not found",
@@ -63,7 +67,11 @@ async def indepth(ctx, *, query):
             color=discord.Color.green()
         )
         embed.set_thumbnail(url=ticker.info["logo_url"])
-        embed.add_field(name="Current price", value="{:.2f}".format(ticker.info["ask"]) + currency, inline=False)
+        if ticker.info["ask"] > 0:
+            embed.add_field(name="Current price", value="{:.2f}".format(ticker.info["ask"]) + currency, inline=False)
+        else:
+            embed.add_field(name="Market currently closed", value="last minute high will be displayed", inline=False)
+            embed.add_field(name="Last minute high", value="{:.2f}".format(ticker.history(period="1d", interval="1m")["High"][-1]) + currency, inline=False)
         embed.add_field(name="Open", value="{:.2f}".format(ticker.info["open"]) + currency, inline=True)
         embed.add_field(name="High", value="{:.2f}".format(ticker.info["dayHigh"]) + currency, inline=True)
         embed.add_field(name="Low", value="{:.2f}".format(ticker.info["dayLow"]) + currency, inline=True)
@@ -117,7 +125,7 @@ async def help(ctx):
         description="A simple and free to use discord bot for stocks.",
         color=discord.Color.green()
     )
-    ukazi = """
+    commands_ = """
     `$price <query> or $p <query>` sends an embed with the current price for the symbol.
     `$indepth <query>` sends an embed with current price, open, dayHigh, dayLow, prevClose and marketCap for the symbol.
     `$info <query>` sends an embed with some basic informations about the company with the symbol queried.
@@ -125,7 +133,7 @@ async def help(ctx):
     `$invite` sends an invite link for itself to be added to other discord servers.
     """
     embed.set_thumbnail(url=client.user.avatar_url)
-    embed.add_field(name="Commands", value=ukazi, inline=False)
+    embed.add_field(name="Commands", value=commands_, inline=False)
     embed.add_field(name="Add the bot to your server", value="https://bit.ly/39bxPcO\nBot is currently in {} servers".format(len(client.guilds)), inline=False)
     embed.add_field(name="Help", value="For more informations about the bot and the code add CaptainYEET#9943")
     await ctx.send(embed=embed)
