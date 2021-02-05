@@ -144,7 +144,7 @@ async def help(ctx):
 async def invite(ctx):
     message = discord.Embed(
         title="Invite me to your discord server:",
-        description="https://bit.ly/2XaFvFn",
+        description="https://bit.ly/39bxPcO",
         color=discord.Color.green()
     )
     await ctx.send(embed=message)
