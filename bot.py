@@ -92,8 +92,8 @@ async def indepth(ctx, *, query):
         embed.add_field(name="Open", value=getValue(ticker, "open", 2) + currency, inline=True)
         embed.add_field(name="High", value=getValue(ticker, "dayHigh", 2) + currency, inline=True)
         embed.add_field(name="Low", value=getValue(ticker, "dayLow", 2) + currency, inline=True)
-        embed.add_field(name="52 week High", value=getValue(ticker, "fiftyTwoWeekHigh", 2), inline=True)
-        embed.add_field(name="52 week Low", value=getValue(ticker, "fiftyTwoWeekLow", 2), inline=True)
+        embed.add_field(name="52 week High", value=getValue(ticker, "fiftyTwoWeekHigh", 2) + currency, inline=True)
+        embed.add_field(name="52 week Low", value=getValue(ticker, "fiftyTwoWeekLow", 2) + currency, inline=True)
         embed.add_field(name="Previous close", value=getValue(ticker, "previousClose", 2) + currency, inline=False)
         embed.add_field(name="Market cap", value=millify(getValue(ticker, "marketCap")), inline=False)
     except:
@@ -119,7 +119,10 @@ async def info(ctx, *, query):
         embed.set_thumbnail(url=ticker.info["logo_url"])
         embed.add_field(name="Long name", value=getText(ticker, "longName"), inline=False)
         embed.add_field(name="Industry", value=getText(ticker, "industry"), inline=False)
-        embed.add_field(name="Address", value=getText(ticker, "address1"), inline=False)
+        if "address2" in ticker.info and ticker.info["address2"] is not None:
+            embed.add_field(name="Address", value=getText(ticker, "address1")+" "+getText(ticker, "address2"), inline=False)
+        else:
+            embed.add_field(name="Address", value=getText(ticker, "address1"), inline=False)
         embed.add_field(name="City", value=getText(ticker, "city"), inline=True)
         embed.add_field(name="State", value=getText(ticker, "state"), inline=True)
         embed.add_field(name="Country", value=getText(ticker, "country"), inline=True)
