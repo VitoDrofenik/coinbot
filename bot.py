@@ -117,14 +117,14 @@ async def info(ctx, *, query):
             color=discord.Color.green()
         )
         embed.set_thumbnail(url=ticker.info["logo_url"])
-        embed.add_field(name="Long name", value=ticker.info["longName"], inline=False)
-        embed.add_field(name="Industry", value=ticker.info["industry"], inline=False)
-        embed.add_field(name="Address", value=ticker.info["address1"], inline=False)
-        embed.add_field(name="City", value=ticker.info["city"], inline=True)
-        embed.add_field(name="State", value=ticker.info["state"], inline=True)
-        embed.add_field(name="Country", value=ticker.info["country"], inline=True)
-        embed.add_field(name="Website", value=ticker.info["website"], inline=False)
-        embed.add_field(name="Phone", value=ticker.info["phone"], inline=True)
+        embed.add_field(name="Long name", value=getText(ticker, "longName"), inline=False)
+        embed.add_field(name="Industry", value=getText(ticker, "industry"), inline=False)
+        embed.add_field(name="Address", value=getText(ticker, "address1"), inline=False)
+        embed.add_field(name="City", value=getText(ticker, "city"), inline=True)
+        embed.add_field(name="State", value=getText(ticker, "state"), inline=True)
+        embed.add_field(name="Country", value=getText(ticker, "country"), inline=True)
+        embed.add_field(name="Website", value=getText(ticker, "website"), inline=False)
+        embed.add_field(name="Phone", value=getText(ticker, "phone"), inline=True)
     except:
         embed = discord.Embed(
             title="Ticker not found",
