@@ -7,10 +7,25 @@ import math
 # this is from SO
 millnames = ['', ' Thousand', ' Million', ' Billion', ' Trillion']
 def millify(n):
+    if n == "not provided":
+        return n
     n = float(n)
     millidx = max(0, min(len(millnames)-1,
                         int(math.floor(0 if n == 0 else math.log10(abs(n))/3))))
     return '{:.0f}{}'.format(n / 10 ** (3 * millidx), millnames[millidx])
+
+
+def getValue(ticker, key, decimals=0):
+    if key in ticker.info and ticker.info[key] is not None:
+        return "{:.{decimals}f}".format(ticker.info[key], decimals=decimals)
+    else:
+        return "not provided"
+
+def getText(ticker, key):
+    if key in ticker.info and ticker.info[key] is not None:
+        return ticker.info[key]
+    else:
+        return "not provided"
 
 
 # here you can set the prefix
@@ -35,8 +50,8 @@ async def price(ctx, query):
             color=discord.Color.green()
         )
         embed.set_thumbnail(url=ticker.info["logo_url"])
-        if ticker.info["ask"] > 0:
-            embed.add_field(name="Current price", value="{:.2f}".format(ticker.info["ask"]) + currency, inline=False)
+        if ticker.info["ask"] is not None and ticker.info["ask"] > 0:
+            embed.add_field(name="Current price", value=getValue(ticker, "ask", 2) + currency, inline=False)
         else:
             embed.add_field(name="Market currently closed", value="last minute high will be displayed", inline=False)
             embed.add_field(name="Last minute high", value="{:.2f}".format(ticker.history(period="1d", interval="1m")["High"][-1]) + currency, inline=False)
@@ -67,16 +82,20 @@ async def indepth(ctx, *, query):
             color=discord.Color.green()
         )
         embed.set_thumbnail(url=ticker.info["logo_url"])
-        if ticker.info["ask"] > 0:
+        if ticker.info["ask"] is not None and ticker.info["ask"] > 0:
             embed.add_field(name="Current price", value="{:.2f}".format(ticker.info["ask"]) + currency, inline=False)
+        elif "regularMarketPrice" in ticker.info and ticker.info["regularMarketPrice"] is not None:
+            embed.add_field(name="Current price", value="{:.2f}".format(ticker.info["regularMarketPrice"]) + currency, inline=False)
         else:
             embed.add_field(name="Market currently closed", value="last minute high will be displayed", inline=False)
             embed.add_field(name="Last minute high", value="{:.2f}".format(ticker.history(period="1d", interval="1m")["High"][-1]) + currency, inline=False)
-        embed.add_field(name="Open", value="{:.2f}".format(ticker.info["open"]) + currency, inline=True)
-        embed.add_field(name="High", value="{:.2f}".format(ticker.info["dayHigh"]) + currency, inline=True)
-        embed.add_field(name="Low", value="{:.2f}".format(ticker.info["dayLow"]) + currency, inline=True)
-        embed.add_field(name="Previous close", value="{:.2f}".format(ticker.info["previousClose"]) + currency, inline=False)
-        embed.add_field(name="Market cap", value=millify(ticker.info["marketCap"]), inline=False)
+        embed.add_field(name="Open", value=getValue(ticker, "open", 2) + currency, inline=True)
+        embed.add_field(name="High", value=getValue(ticker, "dayHigh", 2) + currency, inline=True)
+        embed.add_field(name="Low", value=getValue(ticker, "dayLow", 2) + currency, inline=True)
+        embed.add_field(name="52 week High", value=getValue(ticker, "fiftyTwoWeekHigh", 2) + currency, inline=True)
+        embed.add_field(name="52 week Low", value=getValue(ticker, "fiftyTwoWeekLow", 2) + currency, inline=True)
+        embed.add_field(name="Previous close", value=getValue(ticker, "previousClose", 2) + currency, inline=False)
+        embed.add_field(name="Market cap", value=millify(getValue(ticker, "marketCap")), inline=False)
     except:
         embed = discord.Embed(
             title="Ticker not found",
@@ -98,14 +117,17 @@ async def info(ctx, *, query):
             color=discord.Color.green()
         )
         embed.set_thumbnail(url=ticker.info["logo_url"])
-        embed.add_field(name="Long name", value=ticker.info["longName"], inline=False)
-        embed.add_field(name="Industry", value=ticker.info["industry"], inline=False)
-        embed.add_field(name="Address", value=ticker.info["address1"], inline=False)
-        embed.add_field(name="City", value=ticker.info["city"], inline=True)
-        embed.add_field(name="State", value=ticker.info["state"], inline=True)
-        embed.add_field(name="Country", value=ticker.info["country"], inline=True)
-        embed.add_field(name="Website", value=ticker.info["website"], inline=False)
-        embed.add_field(name="Phone", value=ticker.info["phone"], inline=True)
+        embed.add_field(name="Long name", value=getText(ticker, "longName"), inline=False)
+        embed.add_field(name="Industry", value=getText(ticker, "industry"), inline=False)
+        if "address2" in ticker.info and ticker.info["address2"] is not None:
+            embed.add_field(name="Address", value=getText(ticker, "address1")+" "+getText(ticker, "address2"), inline=False)
+        else:
+            embed.add_field(name="Address", value=getText(ticker, "address1"), inline=False)
+        embed.add_field(name="City", value=getText(ticker, "city"), inline=True)
+        embed.add_field(name="State", value=getText(ticker, "state"), inline=True)
+        embed.add_field(name="Country", value=getText(ticker, "country"), inline=True)
+        embed.add_field(name="Website", value=getText(ticker, "website"), inline=False)
+        embed.add_field(name="Phone", value=getText(ticker, "phone"), inline=True)
     except:
         embed = discord.Embed(
             title="Ticker not found",
